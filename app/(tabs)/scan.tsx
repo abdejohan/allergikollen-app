@@ -11,11 +11,12 @@ import {
 } from 'react';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import StoreContext from '../../contexts/Store';
+import { checkForAllergens } from '../../utils';
 
 export default function ScanScreen() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const { fetchProduct, productData } = useContext(StoreContext);
+  const { fetchProduct, productData, user } = useContext(StoreContext);
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -43,6 +44,13 @@ export default function ScanScreen() {
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
   }, []);
+
+  useEffect(() => {
+    if (user && productData) {
+      const matches = checkForAllergens(user?.allergens, productData);
+      console.log('product contains: ', matches);
+    }
+  }, [user, productData]);
 
   return (
     <View style={styles.container}>

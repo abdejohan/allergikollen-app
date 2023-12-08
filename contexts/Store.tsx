@@ -48,8 +48,11 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
     try {
       const oldSearchesArray = await getData();
       if (oldSearchesArray) {
-        oldSearchesArray.push(product);
-        const jsonValue = JSON.stringify(oldSearchesArray);
+        const newArr = oldSearchesArray.filter(
+          (prod: Product) => prod.gtin !== product.gtin
+        );
+        newArr.push(product);
+        const jsonValue = JSON.stringify(newArr);
         await AsyncStorage.setItem('oldSearchResults', jsonValue);
       } else {
         const jsonValue = JSON.stringify([product]);
@@ -87,8 +90,19 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
     }
   };
 
+  const clearAll = async () => {
+    try {
+      await AsyncStorage.clear();
+    } catch (e) {
+      // clear error
+    }
+
+    console.log('Done.');
+  };
+
   useEffect(() => {
     // Only runs once when the application starts
+    //clearAll();
     fetchUser();
   }, []);
 
@@ -101,6 +115,7 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
       setProductData(fetchData);
       storeData(fetchData);
     } catch (error) {
+      setProductData(null);
       console.log('failed to fetch');
       console.log(error);
     }
