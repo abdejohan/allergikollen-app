@@ -1,17 +1,42 @@
 import { ScrollView, View, StyleSheet } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Chip } from 'react-native-paper';
+import StoreContext from '../../contexts/Store';
+import { Allergen } from '../../types';
 
-type Allergen = {
-  _index?: string;
-  label: string;
-  value: string;
+const allergenToString = (arr: Allergen[]) => {
+  const formattedAllergens = arr.map((allergen) => allergen.value);
+  return formattedAllergens;
+};
+
+const stringToAllergen = (arr: string[]) => {
+  const formattedAllergens = arr.map((allergen) => {
+    return {
+      label: allergen,
+      value: allergen,
+    };
+  });
+  return formattedAllergens;
 };
 
 export default function TabTwoScreen() {
-  const [allergens, setAllergens] = useState([]);
+  const [allergens, setAllergens] = useState<Allergen[]>([]);
+  const { user, patchUserAllergens } = useContext(StoreContext);
   const [selectedItems, setSelectedItems] = useState<Allergen[]>([]);
+
+  useEffect(() => {
+    fetchAllergens();
+    if (user) {
+      const formattedAllergens = stringToAllergen(user.allergens);
+      setSelectedItems(formattedAllergens);
+    }
+  }, []);
+
+  useEffect(() => {
+    const newArr = allergenToString(selectedItems);
+    patchUserAllergens(newArr);
+  }, [selectedItems]);
 
   const handleSelectedAllergens = (item: Allergen) => {
     delete item._index;
@@ -23,8 +48,10 @@ export default function TabTwoScreen() {
     }
   };
 
-  const handleChipClick = (item: Allergen) => {
-    const newArr = selectedItems.filter((allergen, index) => allergen !== item);
+  const handleChipClick = async (item: Allergen) => {
+    const newArr = selectedItems.filter(
+      (allergen) => allergen.label !== item.label
+    );
     setSelectedItems(newArr);
   };
 
@@ -34,16 +61,13 @@ export default function TabTwoScreen() {
         `http://192.168.101.237:8000/api/allergens`
       );
       const fetchData = await productResult.json();
-      setAllergens(fetchData);
+      const formattedAllergens = stringToAllergen(fetchData);
+      setAllergens(formattedAllergens);
     } catch (error) {
       console.log('failed to fetch');
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    fetchAllergens();
-  }, []);
 
   return (
     <ScrollView
@@ -64,7 +88,7 @@ export default function TabTwoScreen() {
         onChange={handleSelectedAllergens}
       />
       <View style={styles.chipContainer}>
-        {selectedItems.map((item, index) => (
+        {selectedItems?.map((item, index) => (
           <Chip
             key={index}
             icon="information"

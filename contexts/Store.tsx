@@ -14,9 +14,10 @@ type ContextType = {
   setProductData: (productData: Product | null) => void;
   fetchProduct: (gtin: string) => void;
   getUser: (userId: number) => void;
-  patchUserAllergens: (allergens: Product[]) => void;
+  patchUserAllergens: (allergens: string[]) => void;
   searches: Product[];
   setSearches: (productArr: Product[]) => void;
+  user: User | null;
 };
 
 type StoreContextProps = {
@@ -32,6 +33,7 @@ const StoreContext = createContext<ContextType>({
   searches: [],
   setSearches: () => {},
   getUser: () => {},
+  user: null,
 });
 
 export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
@@ -80,7 +82,6 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
       const user = await getUser();
       setUser(user);
       fetchSearchResults();
-      console.log('logged in user: ', user);
     } catch (error) {
       return null;
     }
@@ -105,12 +106,16 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
     }
   };
 
-  const patchUserAllergens = async (allergens: Product[]) => {
+  const patchUserAllergens = async (allergens: string[]) => {
     try {
       const productResult = await fetch(
         `http://192.168.101.237:8000/api/users/1/allergens`,
         {
-          body: JSON.stringify(allergens),
+          method: 'PATCH',
+          body: JSON.stringify({ allergens: allergens }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
       );
       const fetchData = await productResult.json();
@@ -145,6 +150,8 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
       setSearches,
       patchUserAllergens,
       getUser,
+      user,
+      setUser,
     }),
     [
       isSignedIn,
@@ -156,6 +163,8 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
       setSearches,
       patchUserAllergens,
       getUser,
+      user,
+      setUser,
     ]
   );
 

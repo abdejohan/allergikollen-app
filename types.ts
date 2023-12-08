@@ -10,6 +10,12 @@ export type Product = {
   ingredientStatement: string;
 };
 
+export type Allergen = {
+  _index?: string;
+  label: string;
+  value: string;
+};
+
 export type User = {
   id: number;
   email: string;
