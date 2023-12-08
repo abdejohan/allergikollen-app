@@ -1,8 +1,18 @@
 import { StyleSheet } from 'react-native';
-import { Text, View } from '../../components/Themed';
+import { View, Text } from '../../components/Themed';
+import { useContext, useEffect } from 'react';
+import StoreContext from '../../contexts/Store';
 
 export default function TabOneScreen() {
-  return <View style={styles.container}></View>;
+  const { searches } = useContext(StoreContext);
+
+  return (
+    <View style={styles.container}>
+      {searches?.map((product) => (
+        <Text>{product.name}</Text>
+      ))}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
