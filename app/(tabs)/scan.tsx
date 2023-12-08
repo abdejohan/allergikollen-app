@@ -2,12 +2,21 @@ import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { Text, View } from '../../components/Themed';
-import { useRef, useMemo, useCallback, useState, useEffect } from 'react';
+import {
+  useRef,
+  useMemo,
+  useCallback,
+  useState,
+  useEffect,
+  useContext,
+} from 'react';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import StoreContext from '../../contexts/Store';
 
 export default function ScanScreen() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const { fetchProduct } = useContext(StoreContext);
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -18,10 +27,11 @@ export default function ScanScreen() {
     getBarCodeScannerPermissions();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = async ({ data }: { data: string | null }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
     bottomSheetRef.current?.close();
+    //  fetch product from the backend
+    data && fetchProduct(data);
   };
 
   // ref
@@ -37,7 +47,13 @@ export default function ScanScreen() {
 
   return (
     <View style={styles.container}>
-      <Button onPress={() => bottomSheetRef.current?.expand()}>Scan</Button>
+      <Button
+        onPress={() => {
+          setScanned(false);
+          bottomSheetRef.current?.expand();
+        }}>
+        Scan
+      </Button>
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}

@@ -10,6 +10,7 @@ type ContextType = {
   isSignedIn: boolean;
   qrData: string | null;
   setQrData: (qrData: string | null) => void;
+  fetchProduct: (gtin: string) => void;
 };
 
 type StoreContextProps = {
@@ -20,6 +21,7 @@ const StoreContext = createContext<ContextType>({
   isSignedIn: false,
   qrData: null,
   setQrData: () => {},
+  fetchProduct: () => {},
 });
 
 export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
@@ -33,9 +35,24 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
     // Fetch firebase user here
   }, []);
 
+  const fetchProduct = async (gtin: string) => {
+    console.log('will try and fetch');
+
+    try {
+      const productResult = await fetch(
+        `http://192.168.101.237:8000/api/products/${gtin}`
+      );
+      const fetchData = await productResult.json();
+      console.log(fetchData);
+    } catch (error) {
+      console.log('failed to fetch');
+      console.log(error);
+    }
+  };
+
   const state = useMemo(
-    () => ({ isSignedIn, setIsSignedIn, qrData, setQrData }),
-    [isSignedIn, setIsSignedIn, qrData, setQrData]
+    () => ({ isSignedIn, setIsSignedIn, qrData, setQrData, fetchProduct }),
+    [isSignedIn, setIsSignedIn, qrData, setQrData, fetchProduct]
   );
 
   return (
