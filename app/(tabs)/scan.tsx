@@ -1,7 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { Text, View } from '../../components/Themed';
 import {
   useRef,
   useMemo,
@@ -16,7 +15,7 @@ import StoreContext from '../../contexts/Store';
 export default function ScanScreen() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const { fetchProduct } = useContext(StoreContext);
+  const { fetchProduct, productData } = useContext(StoreContext);
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -47,6 +46,7 @@ export default function ScanScreen() {
 
   return (
     <View style={styles.container}>
+      <Text>{productData?.gtin}</Text>
       <Button
         onPress={() => {
           setScanned(false);

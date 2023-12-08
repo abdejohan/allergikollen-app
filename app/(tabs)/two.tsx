@@ -23,7 +23,7 @@ export default function TabTwoScreen() {
     }
   };
 
-  const handleChipClick = (item) => {
+  const handleChipClick = (item: Allergen) => {
     const newArr = selectedItems.filter((allergen, index) => allergen !== item);
     setSelectedItems(newArr);
   };
