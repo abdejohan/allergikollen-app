@@ -1,4 +1,5 @@
 export type Product = {
+  image: string;
   name: string;
   brand: string;
   category: string;
