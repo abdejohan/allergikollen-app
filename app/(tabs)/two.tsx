@@ -155,8 +155,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   chipContainer: {
-    borderWidth: 1,
-    borderColor: 'red',
     width: '100%',
     gap: 20,
     alignItems: 'center',
