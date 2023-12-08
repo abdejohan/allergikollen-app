@@ -7,6 +7,7 @@ import {
 } from 'react';
 import { Product, User } from '../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../utils';
 
 type ContextType = {
   isSignedIn: boolean;
@@ -108,9 +109,7 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
 
   const fetchProduct = async (gtin: string) => {
     try {
-      const productResult = await fetch(
-        `http://192.168.101.237:8000/api/products/${gtin}`
-      );
+      const productResult = await fetch(`${API_URL}/products/${gtin}`);
       const fetchData = await productResult.json();
       setProductData(fetchData);
       storeData(fetchData);
@@ -123,16 +122,13 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
 
   const patchUserAllergens = async (allergens: string[]) => {
     try {
-      const productResult = await fetch(
-        `http://192.168.101.237:8000/api/users/1/allergens`,
-        {
-          method: 'PATCH',
-          body: JSON.stringify({ allergens: allergens }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const productResult = await fetch(`${API_URL}/users/1/allergens`, {
+        method: 'PATCH',
+        body: JSON.stringify({ allergens: allergens }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       const fetchData = await productResult.json();
       return fetchData;
     } catch (error) {
@@ -143,9 +139,7 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
 
   const getUser = async (userId = 1) => {
     try {
-      const productResult = await fetch(
-        `http://192.168.101.237:8000/api/users/${userId}`
-      );
+      const productResult = await fetch(`${API_URL}/users/${userId}`);
       const user = await productResult.json();
       return user;
     } catch (error) {

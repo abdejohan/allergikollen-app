@@ -10,9 +10,7 @@ export const gs = StyleSheet.create({
   },
   container: {
     flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 40,
+    padding: 20,
   },
   success: {
     color: '#2ECC71',

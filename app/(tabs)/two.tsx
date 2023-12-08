@@ -1,9 +1,11 @@
-import { ScrollView, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
-import { Chip } from 'react-native-paper';
+import { Chip, useTheme, Text } from 'react-native-paper';
 import StoreContext from '../../contexts/Store';
 import { Allergen } from '../../types';
+import { gs } from '../../styles';
+import { API_URL } from '../../utils';
 
 const allergenToString = (arr: Allergen[]) => {
   const formattedAllergens = arr.map((allergen) => allergen.value);
@@ -24,6 +26,7 @@ export default function TabTwoScreen() {
   const [allergens, setAllergens] = useState<Allergen[]>([]);
   const { user, patchUserAllergens } = useContext(StoreContext);
   const [selectedItems, setSelectedItems] = useState<Allergen[]>([]);
+  const { colors } = useTheme();
 
   useEffect(() => {
     fetchAllergens();
@@ -57,9 +60,7 @@ export default function TabTwoScreen() {
 
   const fetchAllergens = async () => {
     try {
-      const productResult = await fetch(
-        `http://192.168.101.237:8000/api/allergens`
-      );
+      const productResult = await fetch(`${API_URL}/allergens`);
       const fetchData = await productResult.json();
       const formattedAllergens = stringToAllergen(fetchData);
       setAllergens(formattedAllergens);
@@ -70,9 +71,11 @@ export default function TabTwoScreen() {
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.scrollView}>
+    <View style={{ ...gs.container, paddingTop: 50, backgroundColor: 'white' }}>
+      <Text variant="headlineLarge">Detection Preferences</Text>
+      <Text variant="bodyLarge" style={{ maxWidth: '70%', marginBottom: 10 }}>
+        Choose the ingredients you'd like the app to detect.
+      </Text>
       <Dropdown
         style={styles.dropdown}
         placeholderStyle={styles.placeholderStyle}
@@ -91,22 +94,20 @@ export default function TabTwoScreen() {
         {selectedItems?.map((item, index) => (
           <Chip
             key={index}
-            icon="information"
+            mode="outlined"
+            icon="close-circle"
             style={styles.chip}
             onPress={() => handleChipClick(item)}>
             {item.label}
           </Chip>
         ))}
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollView: {
+  View: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -157,9 +158,10 @@ const styles = StyleSheet.create({
   chipContainer: {
     width: '100%',
     gap: 20,
+    flexWrap: 'wrap',
     alignItems: 'center',
     flexDirection: 'row',
-    padding: 20,
+    marginVertical: 20,
   },
   chip: {
     flexShrink: 1,

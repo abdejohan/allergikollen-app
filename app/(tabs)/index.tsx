@@ -1,21 +1,16 @@
 import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import BottomSheet from '@gorhom/bottom-sheet';
-import {
-  useRef,
-  useMemo,
-  useCallback,
-  useState,
-  useEffect,
-  useContext,
-} from 'react';
+import { useRef, useMemo, useState, useEffect, useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import StoreContext from '../../contexts/Store';
 import { checkForAllergens } from '../../utils';
 import Product from '../../components/Product';
+import { gs } from '../../styles';
 
 export default function ScanScreen() {
+  const bottomSheetRef = useRef<BottomSheet>(null);
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [matches, setMatches] = useState<string[]>([]);
@@ -38,16 +33,8 @@ export default function ScanScreen() {
     data && fetchProduct(data);
   };
 
-  // ref
-  const bottomSheetRef = useRef<BottomSheet>(null);
-
   // variables
-  const snapPoints = useMemo(() => ['90%'], []);
-
-  // callbacks
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
+  const snapPoints = useMemo(() => ['100%'], []);
 
   useEffect(() => {
     if (user && productData) {
@@ -57,15 +44,16 @@ export default function ScanScreen() {
   }, [user, productData]);
 
   return (
-    <View style={styles.container}>
+    <View style={{ ...gs.container, backgroundColor: 'white' }}>
       <View style={styles.productContainer}>
         {!productData && (
-          <View style={{ alignItems: 'center', padding: 20 }}>
-            <Text variant="displaySmall">Ready to Scan</Text>
+          <View style={{ alignItems: 'center' }}>
+            <Text variant="displaySmall">SafePlate</Text>
+            <Text variant="labelLarge">Ingredient Alert System</Text>
             <Ionicons name="barcode-outline" size={100} color="black" />
             <View style={styles.searches}>
               <Text variant="labelLarge" style={{ marginBottom: 10 }}>
-                Recent searches
+                Recent scans
               </Text>
               {searches?.map((product) => (
                 <Text style={styles.searchItem} key={product.gtin}>
@@ -92,15 +80,18 @@ export default function ScanScreen() {
         index={-1}
         snapPoints={snapPoints}
         style={styles.bottomSheet}
-        onChange={handleSheetChanges}>
+        detached>
         <View style={styles.contentContainer}>
-          <Text variant="headlineMedium">Aim camera at the barcode</Text>
+          <Text variant="headlineSmall" style={{ textAlign: 'center' }}>
+            Scan products
+          </Text>
           <BarCodeScanner
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
             style={styles.barCodeScanner}
           />
           <Button
             mode="contained"
+            style={styles.scanButton}
             onPress={() => bottomSheetRef.current?.close()}>
             Return{' '}
           </Button>
@@ -128,11 +119,12 @@ const styles = StyleSheet.create({
   },
   bottomSheet: {
     padding: 20,
-    paddingBottom: 200,
-    marginBottom: 200,
+    borderWidth: 1,
+    borderRadius: 10,
+    margin: 20,
   },
   barCodeScanner: {
-    height: 200,
+    height: 270,
     width: '100%',
     marginVertical: 20,
   },
@@ -149,9 +141,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    alignItems: 'center',
   },
   scanButton: {
     marginBottom: 20,
+    borderRadius: 5,
   },
 });
