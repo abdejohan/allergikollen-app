@@ -5,11 +5,12 @@ import {
   useEffect,
   createContext,
 } from 'react';
+import { Product } from '../types';
 
 type ContextType = {
   isSignedIn: boolean;
-  qrData: string | null;
-  setQrData: (qrData: string | null) => void;
+  productData: Product | null;
+  setProductData: (productData: Product | null) => void;
   fetchProduct: (gtin: string) => void;
 };
 
@@ -19,8 +20,8 @@ type StoreContextProps = {
 
 const StoreContext = createContext<ContextType>({
   isSignedIn: false,
-  qrData: null,
-  setQrData: () => {},
+  productData: null,
+  setProductData: () => {},
   fetchProduct: () => {},
 });
 
@@ -28,7 +29,7 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
   props: StoreContextProps
 ) => {
   const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
-  const [qrData, setQrData] = useState<string | null>(null);
+  const [productData, setProductData] = useState<Product | null>(null);
 
   useEffect(() => {
     // Only runs once when the application starts
@@ -36,14 +37,12 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
   }, []);
 
   const fetchProduct = async (gtin: string) => {
-    console.log('will try and fetch');
-
     try {
       const productResult = await fetch(
         `http://192.168.101.237:8000/api/products/${gtin}`
       );
       const fetchData = await productResult.json();
-      console.log(fetchData);
+      setProductData(fetchData);
     } catch (error) {
       console.log('failed to fetch');
       console.log(error);
@@ -51,8 +50,14 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
   };
 
   const state = useMemo(
-    () => ({ isSignedIn, setIsSignedIn, qrData, setQrData, fetchProduct }),
-    [isSignedIn, setIsSignedIn, qrData, setQrData, fetchProduct]
+    () => ({
+      isSignedIn,
+      setIsSignedIn,
+      productData,
+      setProductData,
+      fetchProduct,
+    }),
+    [isSignedIn, setIsSignedIn, productData, setProductData, fetchProduct]
   );
 
   return (
