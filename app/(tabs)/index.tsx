@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
-import { View, Text } from '../../components/Themed';
-import { useContext, useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Text } from 'react-native-paper';
+import { useContext } from 'react';
 import StoreContext from '../../contexts/Store';
 
 export default function TabOneScreen() {
