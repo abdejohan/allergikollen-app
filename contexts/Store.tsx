@@ -61,7 +61,6 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
       }
     } catch (e) {
       console.log(e);
-      // saving error
     }
   };
 
@@ -72,7 +71,6 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
       return oldSearches;
     } catch (e) {
       console.log(e);
-      // error reading value
     }
   };
 
@@ -95,10 +93,8 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
     try {
       await AsyncStorage.clear();
     } catch (e) {
-      // clear error
+      console.log(e);
     }
-
-    console.log('Done.');
   };
 
   useEffect(() => {
@@ -115,7 +111,6 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
       storeData(fetchData);
     } catch (error) {
       setProductData(null);
-      console.log('failed to fetch');
       console.log(error);
     }
   };
@@ -132,7 +127,6 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
       const fetchData = await productResult.json();
       return fetchData;
     } catch (error) {
-      console.log('failed to fetch');
       console.log(error);
     }
   };
@@ -143,7 +137,6 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
       const user = await productResult.json();
       return user;
     } catch (error) {
-      console.log('failed to fetch');
       console.log(error);
     }
   };

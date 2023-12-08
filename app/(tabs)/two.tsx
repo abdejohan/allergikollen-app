@@ -65,7 +65,6 @@ export default function TabTwoScreen() {
       const formattedAllergens = stringToAllergen(fetchData);
       setAllergens(formattedAllergens);
     } catch (error) {
-      console.log('failed to fetch');
       console.log(error);
     }
   };

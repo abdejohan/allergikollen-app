@@ -24,7 +24,9 @@ const Product = ({ product, matches }: ProductProps) => {
       {matches.length ? (
         <>
           <Text style={styles.resultText}>AVOID THIS PRODUCT</Text>
-          <Text>CONTAINS: {matches.map((e) => e)}</Text>
+          <Text style={styles.containsText}>
+            CONTAINS: {matches.map((e) => e)}
+          </Text>
         </>
       ) : (
         <Text style={styles.resultText}>SAFE TO EAT</Text>
@@ -45,16 +47,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   resultText: {
-    marginTop: 10,
+    marginTop: 20,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  containsText: {
+    textAlign: 'center',
   },
-  image: {},
-  contentContainer: {
-    flex: 1,
-    alignItems: 'center',
+  image: {
+    objectFit: 'contain',
   },
 });

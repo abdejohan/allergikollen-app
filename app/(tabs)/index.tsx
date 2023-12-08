@@ -20,6 +20,7 @@ export default function ScanScreen() {
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
+      // @ts-ignore
       setHasPermission(status === 'granted');
     };
 
@@ -29,7 +30,6 @@ export default function ScanScreen() {
   const handleBarCodeScanned = async ({ data }: { data: string | null }) => {
     setScanned(true);
     bottomSheetRef.current?.close();
-    //  fetch product from the backend
     data && fetchProduct(data);
   };
 
@@ -52,9 +52,7 @@ export default function ScanScreen() {
             <Text variant="labelLarge">Ingredient Alert System</Text>
             <Ionicons name="barcode-outline" size={100} color="black" />
             <View style={styles.searches}>
-              <Text variant="labelLarge" style={{ marginBottom: 10 }}>
-                Recent scans
-              </Text>
+              <Text variant="labelLarge">Recent scans</Text>
               {searches?.map((product) => (
                 <Text style={styles.searchItem} key={product.gtin}>
                   {product.name}
@@ -111,6 +109,7 @@ const styles = StyleSheet.create({
   searches: {
     marginTop: 30,
     width: '100%',
+    gap: 10,
   },
   searchItem: {
     borderWidth: 1,
