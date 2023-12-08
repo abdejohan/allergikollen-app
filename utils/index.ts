@@ -9,4 +9,5 @@ export const checkForAllergens = (
   );
 };
 
-export const API_URL = 'http://192.168.1.127:8000/api';
+export const API_URL =
+  'https://allergikollen-api-production.up.railway.app/api';
