@@ -9,3 +9,10 @@ export type Product = {
   lastChangeDate: string;
   ingredientStatement: string;
 };
+
+export type User = {
+  id: number;
+  email: string;
+  username: string;
+  allergens: string[];
+};

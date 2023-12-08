@@ -5,7 +5,7 @@ import {
   useEffect,
   createContext,
 } from 'react';
-import { Product } from '../types';
+import { Product, User } from '../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ContextType = {
@@ -13,6 +13,8 @@ type ContextType = {
   productData: Product | null;
   setProductData: (productData: Product | null) => void;
   fetchProduct: (gtin: string) => void;
+  getUser: (userId: number) => void;
+  patchUserAllergens: (allergens: Product[]) => void;
   searches: Product[];
   setSearches: (productArr: Product[]) => void;
 };
@@ -25,9 +27,11 @@ const StoreContext = createContext<ContextType>({
   isSignedIn: false,
   productData: null,
   setProductData: () => {},
+  patchUserAllergens: () => {},
   fetchProduct: () => {},
   searches: [],
   setSearches: () => {},
+  getUser: () => {},
 });
 
 export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
@@ -35,6 +39,7 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
 ) => {
   const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
   const [searches, setSearches] = useState<Product[]>([]);
+  const [user, setUser] = useState<User | null>(null);
   const [productData, setProductData] = useState<Product | null>(null);
 
   const storeData = async (product: Product) => {
@@ -70,10 +75,20 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
     setSearches(response);
   };
 
+  const fetchUser = async () => {
+    try {
+      const user = await getUser();
+      setUser(user);
+      fetchSearchResults();
+      console.log('logged in user: ', user);
+    } catch (error) {
+      return null;
+    }
+  };
+
   useEffect(() => {
     // Only runs once when the application starts
-    // Fetch firebase user here
-    fetchSearchResults();
+    fetchUser();
   }, []);
 
   const fetchProduct = async (gtin: string) => {
@@ -90,6 +105,35 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
     }
   };
 
+  const patchUserAllergens = async (allergens: Product[]) => {
+    try {
+      const productResult = await fetch(
+        `http://192.168.101.237:8000/api/users/1/allergens`,
+        {
+          body: JSON.stringify(allergens),
+        }
+      );
+      const fetchData = await productResult.json();
+      return fetchData;
+    } catch (error) {
+      console.log('failed to fetch');
+      console.log(error);
+    }
+  };
+
+  const getUser = async (userId = 1) => {
+    try {
+      const productResult = await fetch(
+        `http://192.168.101.237:8000/api/users/${userId}`
+      );
+      const user = await productResult.json();
+      return user;
+    } catch (error) {
+      console.log('failed to fetch');
+      console.log(error);
+    }
+  };
+
   const state = useMemo(
     () => ({
       isSignedIn,
@@ -99,6 +143,8 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
       fetchProduct,
       searches,
       setSearches,
+      patchUserAllergens,
+      getUser,
     }),
     [
       isSignedIn,
@@ -108,6 +154,8 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
       fetchProduct,
       searches,
       setSearches,
+      patchUserAllergens,
+      getUser,
     ]
   );
 

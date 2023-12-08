@@ -9,7 +9,7 @@ export default function TabOneScreen() {
   return (
     <View style={styles.container}>
       {searches?.map((product) => (
-        <Text>{product.name}</Text>
+        <Text key={product.gtin}>{product.name}</Text>
       ))}
     </View>
   );
