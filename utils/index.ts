@@ -4,9 +4,12 @@ export const checkForAllergens = (
   arrayOfAllergens: string[],
   product: Product
 ) => {
-  return arrayOfAllergens.filter((allergen) =>
-    product.ingredientStatement.includes(allergen)
-  );
+  const checkForIngredient = (word: string) => {
+    const pattern = new RegExp(word, 'i');
+    return pattern.test(product.ingredientStatement);
+  };
+
+  return arrayOfAllergens.filter((allergen) => checkForIngredient(allergen));
 };
 
 export const API_URL =

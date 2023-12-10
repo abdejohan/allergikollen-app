@@ -1,5 +1,6 @@
+import { Text } from 'react-native-paper';
 import { Product as ProductType } from '../types';
-import { Text, StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 
 type ProductProps = {
   product: ProductType;
@@ -18,18 +19,29 @@ const Product = ({ product, matches }: ProductProps) => {
         height={150}
         source={{ uri: product.image }}
       />
-      <Text>{product.brand}</Text>
-      <Text>{product.name}</Text>
-      <Text>{product.countryOfOrigin}</Text>
+      <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>
+        {product.brand} - {product.name}
+      </Text>
+      <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>
+        Category <Text>{product.category.split('-')[1].trim()}</Text>
+      </Text>
+      <Text>
+        <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>
+          Origin{' '}
+        </Text>
+        {product.countryOfOrigin}
+      </Text>
       {matches.length ? (
-        <>
-          <Text style={styles.resultText}>AVOID THIS PRODUCT</Text>
-          <Text style={styles.containsText}>
-            CONTAINS: {matches.map((e) => e)}
-          </Text>
-        </>
+        <View>
+          <Text style={styles.resultText}>Caution: Detected Ingredient</Text>
+          {matches.map((e) => (
+            <Text key={e} style={styles.containsText}>
+              {e.toUpperCase()}
+            </Text>
+          ))}
+        </View>
       ) : (
-        <Text style={styles.resultText}>SAFE TO EAT</Text>
+        <Text style={styles.resultText}>Ingredient Safe: Enjoy!</Text>
       )}
     </View>
   );
@@ -45,6 +57,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
     borderRadius: 5,
+    gap: 5,
   },
   resultText: {
     marginTop: 20,
@@ -52,7 +65,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   containsText: {
+    fontWeight: 'bold',
     textAlign: 'center',
+    color: 'red',
   },
   image: {
     objectFit: 'contain',
