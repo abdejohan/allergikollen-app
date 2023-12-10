@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   chipContainer: {
     width: '100%',
-    gap: 20,
+    gap: 10,
     flexWrap: 'wrap',
     alignItems: 'center',
     flexDirection: 'row',

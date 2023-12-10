@@ -1,6 +1,10 @@
 import { Link, Tabs } from 'expo-router';
 import { Pressable, useColorScheme } from 'react-native';
-import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import {
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons,
+} from '@expo/vector-icons';
 import { useTheme } from 'react-native-paper';
 
 /**
@@ -20,13 +24,14 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
+        tabBarLabelStyle: { top: -6 },
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'Scanner',
           tabBarIcon: ({ color }) => (
-            <AntDesign name="home" size={24} color={color} />
+            <Ionicons name="scan-outline" size={24} color="black" />
           ),
           headerRight: () => (
             <Link href="/modal" asChild>
@@ -48,7 +53,13 @@ export default function TabLayout() {
         name="two"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color }) => <TabBarIcon name="gear" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="account-settings-outline"
+              size={24}
+              color="black"
+            />
+          ),
         }}
       />
     </Tabs>

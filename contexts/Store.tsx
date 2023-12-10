@@ -125,6 +125,7 @@ export const StoreContextProvider: FunctionComponent<StoreContextProps> = (
         },
       });
       const fetchData = await productResult.json();
+      fetchUser();
       return fetchData;
     } catch (error) {
       console.log(error);

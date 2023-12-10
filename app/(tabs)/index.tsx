@@ -8,10 +8,12 @@ import StoreContext from '../../contexts/Store';
 import { checkForAllergens } from '../../utils';
 import Product from '../../components/Product';
 import { gs } from '../../styles';
+import { useTheme } from '@react-navigation/native';
 
 export default function ScanScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [hasPermission, setHasPermission] = useState(null);
+  const { colors } = useTheme();
   const [scanned, setScanned] = useState(false);
   const [matches, setMatches] = useState<string[]>([]);
   const { fetchProduct, productData, user, setProductData, searches } =
@@ -44,7 +46,7 @@ export default function ScanScreen() {
   }, [user, productData]);
 
   return (
-    <View style={{ ...gs.container, backgroundColor: 'white' }}>
+    <View style={gs.container}>
       <View style={styles.productContainer}>
         {!productData && (
           <View style={{ alignItems: 'center' }}>
@@ -81,7 +83,7 @@ export default function ScanScreen() {
         detached>
         <View style={styles.contentContainer}>
           <Text variant="headlineSmall" style={{ textAlign: 'center' }}>
-            Scan products
+            Scan product
           </Text>
           <BarCodeScanner
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}

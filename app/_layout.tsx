@@ -1,15 +1,11 @@
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
-import {
-  PaperProvider,
-  configureFonts,
-  DefaultTheme,
-} from 'react-native-paper';
+import { PaperProvider } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StoreContextProvider } from '../contexts/Store';
-import { useColorScheme } from 'react-native';
-import { MD3DarkTheme, MD3LightTheme } from '../assets/themes';
+import { MD3LightTheme, DefaultTheme } from '../assets/themes';
+import { ThemeProvider } from '@react-navigation/native';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -51,18 +47,18 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const darkMode = useColorScheme() === 'dark';
-
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <StoreContextProvider>
-        <PaperProvider theme={darkMode ? MD3DarkTheme : MD3LightTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-          </Stack>
-        </PaperProvider>
-      </StoreContextProvider>
-    </GestureHandlerRootView>
+    <PaperProvider theme={MD3LightTheme}>
+      <ThemeProvider value={DefaultTheme}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <StoreContextProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+            </Stack>
+          </StoreContextProvider>
+        </GestureHandlerRootView>
+      </ThemeProvider>
+    </PaperProvider>
   );
 }
